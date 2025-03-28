@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div style="display: flex ; align-items: center;">
+            <div>
+                <a class="navbar-brand" href="#" style="color: blue; font-weight: bolder;">OpRoute</a>
+            </div>
+
+        </div>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span class="nav-link">Welcome, {{ user.username }}</span>
+                </li>
+                <li>
+                    <a class="nav-link" href="http://127.0.0.1:8000/logout" style="color: black;">Logout</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+    {% block content %}
+    <div class="container mt-5">
+        {% if role == "admin" %}
+        <div class="card">
+            <div class="card-header">
+                <h2>Admin Dashboard</h2>
+            </div>
+            <div class="card-body">
+                <p>Welcome, To the Admin Dashboard </p>
+                <a href="{% url 'admin:index' %}" class="btn btn-primary">Manage Users</a>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="map-container" style="width: 60%; height: 450px;">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d5146.2780981508995!2d29.499113605553237!3d-1.6138519999999785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x19dcff481113c6b9%3A0xbfa920a985255fc9!2sMukamira!3m2!1d-1.6109337!2d29.4998944!4m5!1s0x19dca4258ed8e797%3A0xf32b36a5411d0bc8!2sKigali!3m2!1d-1.9440727!2d30.061885099999998!5e1!3m2!1sen!2srw!4v1731913894174!5m2!1sen!2srw"
+                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    <div class="chart-container" style="width: 55%;">
+                        <canvas id="userInteractionChart" width="400" height="450"></canvas>
+                    </div>
+                </div>
+                <script>
+                window.onload = function() {
+                    fetch('http://127.0.0.1:8000/transport/vehicles/vehicle_data')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Fetched data:', data); 
+                
+                        
+                        let vehicles = [];
+                
+                        if (Array.isArray(data)) {
+                            vehicles = data;
+                        } else if (data && data.vehicles && Array.isArray(data.vehicles)) {
+                            vehicles = data.vehicles;
+                        } else {
+
+                            console.error('Expected an array or an object with a "vehicles" key, but got:', data);
+                            return;
+                        }
+                
+                        
+                        const vehicleNames = vehicles.map(vehicle => vehicle.model);
+                        const vehicleData = vehicles.map(vehicle => vehicle.capacity);
+                
+                        const chartData = {
+                            labels: vehicleNames,
+                            datasets: [{
+                                label: 'Capacity',
+                                data: vehicleData,
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        };
+                
+                        const config = {
+                            type: 'line',
+                            data: chartData,
+                            options: {
+                                responsive: true
+                            }
+                        };
+                
+                        const ctx = document.getElementById('userInteractionChart').getContext('2d');
+                        new Chart(ctx, config);
+                    })
+                    .catch(error => console.error('Error fetching vehicle data:', error));
+                };
+            </script>                
+
+
+                <div class="my-4 d-flex flex-wrap justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-primary">
+                            <a href="{% url 'transport:add_schedule' %}" style="color: white;">Add Schedule</a>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-success">
+                            <a href="{% url 'transport:add_route' %}" style="color: white;">Add Route</a>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary">
+                            <a href="{% url 'transport:add_vehicle' %}" style="color: white;">Add Vehicle</a>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-success">
+                            <a href="{% url 'transport:add_driver' %}" style="color: white;">Add Driver</a>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-success">
+                            <a href="{% url 'transport:predict' %}" style="color: white;">Predict Duration journey</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif role == "driver" %}
+        <div class="card">
+            <div class="card-header">
+                <h2>Driver's Dashboard</h2>
+            </div>
+            <div class="card-body">
+                <p>Welcome, {{ user.username }}. Here is your driver-specific information and tools.</p>
+                <h4>Your Schedule</h4>
+                <ul>
+                    <li>Vehicle: {{ driver.vehicle }}</li>
+                    <li>Route: {{ driver.schedule.route }}</li>
+                    <li>Departure: {{ driver.schedule.departure_time }}</li>
+                    <li>Arrival: {{ driver.schedule.arrival_time }}</li>
+                </ul>
+                <h4>Your Optimized Route</h4>
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d5146.2780981508995!2d29.499113605553237!3d-1.6138519999999785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x19dcff481113c6b9%3A0xbfa920a985255fc9!2sMukamira!3m2!1d-1.6109337!2d29.4998944!4m5!1s0x19dca4258ed8e797%3A0xf32b36a5411d0bc8!2sKigali!3m2!1d-1.9440727!2d30.061885099999998!5e1!3m2!1sen!2srw!4v1731913894174!5m2!1sen!2srw"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+
+    {% elif role == "scheduler" %}
+    <div class="card" style="height: 100vh; width: 100%;">
+        <div class="card-header">
+            <h2>Scheduler's Dashboard</h2>
+        </div>
+        <div class="card-body">
+            <p>Welcome, {{ user.username }}. Here is your scheduler-specific information and tools.</p>
+            <div class="my-4">
+                <div class="container">
+                    <h3>Route List</h3>
+                    <a href="{% url 'transport:add_route' %}" class="btn btn-primary">Add Route</a>
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>Start Location</th>
+                                <th>End Location</th>
+                                <th>Distance</th>
+                                <th>Duration</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for route in routes %}
+                            <tr>
+                                <td>{{ route.start_location }}</td>
+                                <td>{{ route.end_location }}</td>
+                                <td>{{ route.distance }}</td>
+                                <td>{{ route.duration }}</td>
+                                <td>
+                                    <a href="{% url 'transport:edit_route' route.id %}"
+                                        class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{% url 'transport:delete_route' route.id %}"
+                                        class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="my-4">
+                <div class="container">
+                    <h3>Schedule List</h3>
+                    <a href="{% url 'transport:add_schedule' %}" class="btn btn-primary">Add Schedule</a>
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Driver</th>
+                                <th>Route</th>
+                                <th>Departure Time</th>
+                                <th>Arrival Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in schedules %}
+                            <tr>
+                                <td>{{ schedule.vehicle }}</td>
+                                <td>{{ schedule.driver }}</td>
+                                <td>{{ schedule.route }}</td>
+                                <td>{{ schedule.departure_time }}</td>
+                                <td>{{ schedule.arrival_time }}</td>
+                                <td style="display: flex;align-items: center; justify-content: space-between;">
+                                    <a href="{% url 'transport:edit_schedule' schedule.id %}"
+                                        class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{% url 'transport:delete_schedule' schedule.id %}"
+                                        class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-header" style="flex-direction: row; justify-content: space-between;">
+                <h2>General User Dashboard</h2>
+                <button type="submit" href="{% url 'logout_user' %}">Logout</button>
+            </div>
+            <div class="card-body">
+                <p>Welcome to the dashboard, {{ user.username }}.{{user.role}}</p>
+            </div>
+            <h4>Available Drivers</h4>
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Assigned Vehicle</th>
+                        <th>Route</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for driver in drivers %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ driver.name }}</td>
+                        <td>
+                            {% if driver.vehicle %}
+                            {{ driver.vehicle.name }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if driver.route %}
+                            {{ driver.route.start_location }} to {{ driver.route.end_location }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    {% endif %}
+    {%endblock%}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

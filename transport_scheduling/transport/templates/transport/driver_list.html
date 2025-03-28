@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Driver List</h1>
+        <a href="{% url 'transport:add_driver' %}" class="btn btn-primary">Add Driver</a>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>License Number</th>
+                    <th>Contact Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for driver in drivers %}
+                <tr>
+                    <td>{{ driver.name }}</td>
+                    <td>{{ driver.license_number }}</td>
+                    <td>{{ driver.contact_number }}</td>
+                    <td>
+                        <a href="{% url 'transport:edit_driver' driver.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'transport:delete_driver' driver.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

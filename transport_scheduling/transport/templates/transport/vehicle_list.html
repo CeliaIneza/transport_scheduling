@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .table {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .table thead {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        .table tbody tr td {
+            vertical-align: middle;
+            font-size: 1rem;
+        }
+        .btn {
+            border-radius: 8px;
+        }
+        .btn-warning, .btn-danger {
+            color: #fff;
+        }
+        .search-bar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 12px 40px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-size: 1rem;
+        }
+        .search-bar .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .pagination {
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Vehicle Dashboard</h1>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{% url 'transport:add_vehicle' %}" class="btn btn-primary">Add Vehicle</a>
+            <div class="search-bar">
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search Vehicles...">
+            </div>
+        </div>
+
+        <table class="table table-hover mt-3">
+            <thead>
+                <tr>
+                    <th>VIN</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Year</th>
+                    <th>Color</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vehicle in vehicles %}
+                <tr>
+                    <td>{{ vehicle.VIN }}</td>
+                    <td>{{ vehicle.make }}</td>
+                    <td>{{ vehicle.model }}</td>
+                    <td>{{ vehicle.year }}</td>
+                    <td>{{ vehicle.color }}</td>
+                    <td>
+                        <a href="{% url 'transport:edit_vehicle' vehicle.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'transport:delete_vehicle' vehicle.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

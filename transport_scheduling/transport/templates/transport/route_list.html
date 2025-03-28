@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Route List</h1>
+        <a href="{% url 'transport:add_route' %}" class="btn btn-primary">Add Route</a>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Start Location</th>
+                    <th>End Location</th>
+                    <th>Distance</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for route in routes %}
+                <tr>
+                    <td>{{ route.start_location }}</td>
+                    <td>{{ route.end_location }}</td>
+                    <td>{{ route.distance }}</td>
+                    <td>{{ route.duration }}</td>
+                    <td>
+                        <a href="{% url 'transport:edit_route' route.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'transport:delete_route' route.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
