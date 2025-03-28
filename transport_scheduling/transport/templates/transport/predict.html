@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Scheduling System</title>
+    
+    <!-- Bootstrap 4 CSS for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Optional: Custom styling -->
+    <style>
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn-submit {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">Journey Duration Prediction</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="distance_km">Distance (km):</label>
+                {{ form.distance_km }}
+            </div>
+
+          
+
+            
+            <div class="form-group">
+                <label for="weather_Rainy">Rainy Weather:</label>
+                {{ form.weather_Rainy }}
+            </div>
+
+            <div class="form-group">
+                <label for="weather_Sunny">Sunny Weather:</label>
+                {{ form.weather_Sunny }}
+            </div>
+
+            <div class="form-group">
+                <label for="temperature">Temperature (°C):</label>
+                {{ form.temperature }}
+            </div>
+
+            <div class="form-group">
+                <label for="traffic_level_Low">Low Traffic Level:</label>
+                {{ form.traffic_level_Low }}
+            </div>
+
+            <div class="form-group">
+                <label for="traffic_level_Medium">Medium Traffic Level:</label>
+                {{ form.traffic_level_Medium }}
+            </div>
+
+            <div class="form-group">
+                <label for="day_of_week_Weekend">Weekend:</label>
+                {{ form.day_of_week_Weekend }}
+            </div>
+
+            <div class="form-group">
+                <label for="hour_of_day">Hour of Day:</label>
+                {{ form.hour_of_day }}
+            </div>
+
+            <button type="submit" class="btn btn-submit mt-3">Predict</button>
+
+            {% if prediction is not None %}
+            <div class="alert alert-success mt-3">
+                <p class="mb-0"><strong>Estimated Journey Duration:</strong> {{ prediction|floatformat:2 }} minutes</p>
+            </div>
+            {% endif %}
+
+            {% if error_message %}
+            <div class="alert alert-danger mt-3">
+                <p>{{ error_message }}</p>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Bootstrap 4 JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

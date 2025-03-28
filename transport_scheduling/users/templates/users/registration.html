@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include the Crispy forms CSS if needed -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-4/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="form-container" style="width: 100%; max-width: 500px;">
+            <h2 class="text-center">Register</h2>
+            <form method="POST" action="{% url 'register_user' %}">
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
+
+                <!-- User and Profile Form Rendering with Crispy Forms -->
+                <div class="form-group">
+                    {{ user_form|crispy }}
+                </div>
+                <div class="form-group">
+                    {{ profile_form|crispy }}
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success btn-block">Register</button>
+            </form>
+            <div class="text-center mt-3">
+                <span>Already have an account? <a href="{% url 'login_user' %}">Login</a></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
